@@ -23,11 +23,25 @@ public class ScheduleService {
         return new ScheduleResponseDto(savedSchedule);
     }
 
-    public List<ScheduleResponseDto> getAllScheduleDos() {
-        return scheduleRepository.findAllScheduleDos();
+    public List<ScheduleResponseDto> getAllSchedules() {
+        return scheduleRepository.findAllSchedules();
     }
 
     public ScheduleResponseDto getSchedule(Long id) {
         return scheduleRepository.getSchedule(id);
+    }
+
+    public Long updateSchedule(Long id, String inputPassword, ScheduleRequestDto scheduleRequestDto) {
+        Schedule schedule = scheduleRepository.findById(id);
+        if (schedule != null) {
+            if (inputPassword.equals(schedule.getPassword())) {
+                scheduleRepository.updateSchedule(id, scheduleRequestDto);
+                return id;
+            } else {
+                throw new IllegalArgumentException("비밀번호 불일치");
+            }
+        } else {
+            throw new IllegalArgumentException("일정이 존재하지 않습니다");
+        }
     }
 }

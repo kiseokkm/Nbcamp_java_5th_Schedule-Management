@@ -1,9 +1,9 @@
 package com.sparta.nbcamp_java_5th_schedulemanagement.repository;
 
+import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleRequestDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleResponseDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.entity.Schedule;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
@@ -42,36 +42,42 @@ public class ScheduleRepository {
         return schedule;
     }
 
-    public List<ScheduleResponseDto> findAllScheduleDos() {
+    public List<ScheduleResponseDto> findAllSchedules() {
         String sql = "SELECT * FROM scheduleTable ORDER BY date DESC";
-        return jdbcTemplate.query(sql, new RowMapper<ScheduleResponseDto>() {
-            @Override
-            public ScheduleResponseDto mapRow(ResultSet resultSet, int i) throws SQLException {
-                Long id = resultSet.getLong("id");
-                String title = resultSet.getString("title");
-                String contents = resultSet.getString("contents");
-                String manager = resultSet.getString("manager");
-                String password = resultSet.getString("password");
-                String date = resultSet.getString("date");
-
-                return new ScheduleResponseDto(id, title, contents, manager, date);
-            }
-        });
+        return jdbcTemplate.query(sql, this::mapRowForSchedule);
     }
 
     public ScheduleResponseDto getSchedule(Long id) {
         String sql = "SELECT * FROM scheduleTable WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, new RowMapper<ScheduleResponseDto>() {
-            @Override
-            public ScheduleResponseDto mapRow(ResultSet resultSet, int i) throws SQLException {
-                Long scheduleId = resultSet.getLong("id");
-                String title = resultSet.getString("title");
-                String contents = resultSet.getString("contents");
-                String manager = resultSet.getString("manager");
-                String date = resultSet.getString("date");
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, this::mapRowForSchedule);
+    }
 
-                return new ScheduleResponseDto(scheduleId, title, contents, manager, date);
-            }
+    private ScheduleResponseDto mapRowForSchedule(ResultSet resultSet, int i) throws SQLException {
+        Long id = resultSet.getLong("id");
+        String title = resultSet.getString("title");
+        String contents = resultSet.getString("contents");
+        String manager = resultSet.getString("manager");
+        String date = resultSet.getString("date");
+
+        return new ScheduleResponseDto(id, title, contents, manager, date);
+    }
+
+    public void updateSchedule(Long id, ScheduleRequestDto scheduleRequestDto) {
+        String sql = "UPDATE scheduleTable SET title = ?, contents = ?, manager = ? WHERE id = ?";
+        jdbcTemplate.update(sql, scheduleRequestDto.getTitle(), scheduleRequestDto.getContents(), scheduleRequestDto.getManager(), id);
+    }
+
+    public Schedule findById(Long id) {
+        String sql = "SELECT * FROM scheduleTable WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (resultSet, i) -> {
+            Schedule schedule = new Schedule();
+            schedule.setId(resultSet.getLong("id"));
+            schedule.setTitle(resultSet.getString("title"));
+            schedule.setContents(resultSet.getString("contents"));
+            schedule.setManager(resultSet.getString("manager"));
+            schedule.setPassword(resultSet.getString("password"));
+            schedule.setDate(resultSet.getString("date"));
+            return schedule;
         });
     }
 }

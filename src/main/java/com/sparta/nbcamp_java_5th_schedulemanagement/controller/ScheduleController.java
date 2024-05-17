@@ -16,18 +16,23 @@ public class ScheduleController {
         this.scheduleService = scheduleService;
     }
 
-    @PostMapping("/Schedule")
+    @PostMapping("/schedules")
     public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
         return scheduleService.createSchedule(scheduleRequestDto);
     }
 
-    @GetMapping("/Schedules")
+    @GetMapping("/schedules")
     public List<ScheduleResponseDto> getSchedules() {
-        return scheduleService.getAllScheduleDos();
+        return scheduleService.getAllSchedules();
     }
 
-    @GetMapping("/Schedule/{id}")
+    @GetMapping("/schedules/{id}")
     public ScheduleResponseDto getSchedule(@PathVariable Long id) {
         return scheduleService.getSchedule(id);
+    }
+
+    @PutMapping("/schedules/{id}")
+    public Long updateSchedule(@PathVariable Long id, @RequestParam String password, @RequestBody ScheduleRequestDto scheduleRequestDto) {
+        return scheduleService.updateSchedule(id, password, scheduleRequestDto);
     }
 }
