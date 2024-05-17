@@ -44,4 +44,18 @@ public class ScheduleService {
             throw new IllegalArgumentException("일정이 존재하지 않습니다");
         }
     }
+
+    public Long deleteSchedule(Long id, String inputPassword) {
+        Schedule schedule = scheduleRepository.findById(id);
+        if (schedule != null) {
+            if (inputPassword.equals(schedule.getPassword())) {
+                scheduleRepository.deleteSchedule(id);
+                return id;
+            } else {
+                throw new IllegalArgumentException("비밀번호 불일치");
+            }
+        } else {
+            throw new IllegalArgumentException("일정이 존재하지 않습니다");
+        }
+    }
 }

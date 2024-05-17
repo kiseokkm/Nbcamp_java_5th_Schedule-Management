@@ -80,4 +80,8 @@ public class ScheduleRepository {
             return schedule;
         });
     }
+    public void deleteSchedule(Long id) {
+        String sql = "DELETE FROM scheduleTable WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }
