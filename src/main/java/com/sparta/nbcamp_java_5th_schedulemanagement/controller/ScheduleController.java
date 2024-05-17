@@ -3,10 +3,9 @@ package com.sparta.nbcamp_java_5th_schedulemanagement.controller;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleRequestDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleResponseDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.service.ScheduleService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api")
@@ -16,8 +15,19 @@ public class ScheduleController {
     public ScheduleController(ScheduleService scheduleService) {
         this.scheduleService = scheduleService;
     }
+
     @PostMapping("/Schedule")
-    public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto ScheduleRequestDto) {
-        return scheduleService.createSchedule(ScheduleRequestDto);
+    public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
+        return scheduleService.createSchedule(scheduleRequestDto);
+    }
+
+    @GetMapping("/Schedules")
+    public List<ScheduleResponseDto> getSchedules() {
+        return scheduleService.getAllScheduleDos();
+    }
+
+    @GetMapping("/Schedule/{id}")
+    public ScheduleResponseDto getSchedule(@PathVariable Long id) {
+        return scheduleService.getSchedule(id);
     }
 }

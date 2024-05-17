@@ -7,17 +7,25 @@ import lombok.Getter;
 public class ScheduleResponseDto {
     private Long id;
     private String title;
-    private String schedule;
+    private String contents;
     private String manager;
     private String password;
     private String date;
 
-    public ScheduleResponseDto(Schedule Schedule) {
-        this.id = Schedule.getId();
-        this.title = Schedule.getTitle();
-        this.schedule = Schedule.getContents();
-        this.manager = Schedule.getManager();
-        this.password = Schedule.getPassword();
-        this.date = Schedule.getDate();
+    public ScheduleResponseDto(Schedule schedule) {
+        this.id = schedule.getId();
+        this.title = schedule.getTitle();
+        this.contents = schedule.getContents();
+        this.manager = schedule.getManager();
+        this.password = schedule.getPassword();
+        this.date = schedule.getDate();
+    }
+
+    public ScheduleResponseDto(Long id, String title, String contents, String manager, String date) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+        this.manager = manager;
+        this.date = date;
     }
 }
