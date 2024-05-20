@@ -37,9 +37,7 @@ public class ScheduleRepository {
         }, keyHolder);
 
         Long id = keyHolder.getKey().longValue();
-        schedule.setId(id);
-
-        return schedule;
+        return new Schedule(id, schedule.getTitle(), schedule.getContents(), schedule.getManager(), schedule.getPassword(), schedule.getDate());
     }
 
     public List<ScheduleResponseDto> findAllSchedules() {

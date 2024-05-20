@@ -33,29 +33,29 @@ public class ScheduleService {
 
     public Long updateSchedule(Long id, UpdateScheduleRequestDto updateScheduleRequestDto) {
         Schedule schedule = scheduleRepository.findById(id);
-        if (schedule != null) {
-            if (Objects.equals(updateScheduleRequestDto.getPassword(), schedule.getPassword())) {
-                scheduleRepository.updateSchedule(id, updateScheduleRequestDto);
-                return id;
-            } else {
-                throw new IllegalArgumentException("비밀번호 불일치");
-            }
-        } else {
+        if (schedule == null) {
             throw new IllegalArgumentException("일정이 존재하지 않습니다");
         }
+
+        if (!Objects.equals(updateScheduleRequestDto.getPassword(), schedule.getPassword())) {
+            throw new IllegalArgumentException("비밀번호 불일치");
+        }
+
+        scheduleRepository.updateSchedule(id, updateScheduleRequestDto);
+        return id;
     }
 
     public Long deleteSchedule(Long id, DeleteScheduleRequestDto deleteScheduleRequestDto) {
         Schedule schedule = scheduleRepository.findById(id);
-        if (schedule != null) {
-            if (Objects.equals(deleteScheduleRequestDto.getPassword(), schedule.getPassword())) {
-                scheduleRepository.deleteSchedule(id);
-                return id;
-            } else {
-                throw new IllegalArgumentException("비밀번호 불일치");
-            }
-        } else {
+        if (schedule == null) {
             throw new IllegalArgumentException("일정이 존재하지 않습니다");
         }
+
+        if (!Objects.equals(deleteScheduleRequestDto.getPassword(), schedule.getPassword())) {
+            throw new IllegalArgumentException("비밀번호 불일치");
+        }
+
+        scheduleRepository.deleteSchedule(id);
+        return id;
     }
 }
