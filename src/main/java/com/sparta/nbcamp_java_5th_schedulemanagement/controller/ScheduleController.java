@@ -1,7 +1,6 @@
 package com.sparta.nbcamp_java_5th_schedulemanagement.controller;
 
-import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleRequestDto;
-import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleResponseDto;
+import com.sparta.nbcamp_java_5th_schedulemanagement.dto.*;
 import com.sparta.nbcamp_java_5th_schedulemanagement.service.ScheduleService;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,13 +30,13 @@ public class ScheduleController {
         return scheduleService.getSchedule(id);
     }
 
-    @PutMapping("/{id}/{password}")
-    public Long updateSchedule(@PathVariable Long id, @PathVariable String password, @RequestBody ScheduleRequestDto scheduleRequestDto) {
-        return scheduleService.updateSchedule(id, password, scheduleRequestDto);
+    @PutMapping("/{id}")
+    public Long updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto) {
+        return scheduleService.updateSchedule(id, updateScheduleRequestDto);
     }
 
-    @DeleteMapping("/{id}/{password}")
-    public Long deleteSchedule(@PathVariable Long id, @PathVariable String password) {
-        return scheduleService.deleteSchedule(id, password);
+    @DeleteMapping("/{id}")
+    public Long deleteSchedule(@PathVariable Long id, @RequestBody DeleteScheduleRequestDto deleteScheduleRequestDto) {
+        return scheduleService.deleteSchedule(id, deleteScheduleRequestDto);
     }
 }

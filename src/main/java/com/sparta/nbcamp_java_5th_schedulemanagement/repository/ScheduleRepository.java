@@ -1,7 +1,6 @@
 package com.sparta.nbcamp_java_5th_schedulemanagement.repository;
 
-import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleRequestDto;
-import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleResponseDto;
+import com.sparta.nbcamp_java_5th_schedulemanagement.dto.*;
 import com.sparta.nbcamp_java_5th_schedulemanagement.entity.Schedule;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -62,9 +61,9 @@ public class ScheduleRepository {
         return new ScheduleResponseDto(id, title, contents, manager, date);
     }
 
-    public void updateSchedule(Long id, ScheduleRequestDto scheduleRequestDto) {
-        String sql = "UPDATE scheduleTable SET title = ?, contents = ?, manager = ? WHERE id = ?";
-        jdbcTemplate.update(sql, scheduleRequestDto.getTitle(), scheduleRequestDto.getContents(), scheduleRequestDto.getManager(), id);
+    public void updateSchedule(Long id, UpdateScheduleRequestDto updateScheduleRequestDto) {
+        String sql = "UPDATE scheduleTable SET title = ?, contents = ?, manager = ?, date = ? WHERE id = ?";
+        jdbcTemplate.update(sql, updateScheduleRequestDto.getTitle(), updateScheduleRequestDto.getContents(), updateScheduleRequestDto.getManager(), updateScheduleRequestDto.getDate(), id);
     }
 
     public Schedule findById(Long id) {

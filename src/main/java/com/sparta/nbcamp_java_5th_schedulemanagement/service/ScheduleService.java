@@ -1,7 +1,6 @@
 package com.sparta.nbcamp_java_5th_schedulemanagement.service;
 
-import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleRequestDto;
-import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleResponseDto;
+import com.sparta.nbcamp_java_5th_schedulemanagement.dto.*;
 import com.sparta.nbcamp_java_5th_schedulemanagement.entity.Schedule;
 import com.sparta.nbcamp_java_5th_schedulemanagement.repository.ScheduleRepository;
 import org.springframework.stereotype.Service;
@@ -31,11 +30,11 @@ public class ScheduleService {
         return scheduleRepository.getSchedule(id);
     }
 
-    public Long updateSchedule(Long id, String inputPassword, ScheduleRequestDto scheduleRequestDto) {
+    public Long updateSchedule(Long id, UpdateScheduleRequestDto updateScheduleRequestDto) {
         Schedule schedule = scheduleRepository.findById(id);
         if (schedule != null) {
-            if (inputPassword.equals(schedule.getPassword())) {
-                scheduleRepository.updateSchedule(id, scheduleRequestDto);
+            if (updateScheduleRequestDto.getPassword().equals(schedule.getPassword())) {
+                scheduleRepository.updateSchedule(id, updateScheduleRequestDto);
                 return id;
             } else {
                 throw new IllegalArgumentException("비밀번호 불일치");
@@ -45,10 +44,10 @@ public class ScheduleService {
         }
     }
 
-    public Long deleteSchedule(Long id, String inputPassword) {
+    public Long deleteSchedule(Long id, DeleteScheduleRequestDto deleteScheduleRequestDto) {
         Schedule schedule = scheduleRepository.findById(id);
         if (schedule != null) {
-            if (inputPassword.equals(schedule.getPassword())) {
+            if (deleteScheduleRequestDto.getPassword().equals(schedule.getPassword())) {
                 scheduleRepository.deleteSchedule(id);
                 return id;
             } else {
