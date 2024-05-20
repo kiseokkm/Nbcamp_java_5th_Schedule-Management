@@ -23,4 +23,13 @@ public class Schedule {
         this.password = scheduleRequestDto.getPassword();
         this.date = scheduleRequestDto.getDate();
     }
+
+    public Schedule(Long id, String title, String contents, String manager, String password, String date) {
+        this.id = id;
+        this.title = title;
+        this.contents = contents;
+        this.manager = manager;
+        this.password = password;
+        this.date = date;
+    }
 }

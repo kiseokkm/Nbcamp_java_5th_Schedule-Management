@@ -1,6 +1,7 @@
 package com.sparta.nbcamp_java_5th_schedulemanagement.repository;
 
-import com.sparta.nbcamp_java_5th_schedulemanagement.dto.*;
+import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleResponseDto;
+import com.sparta.nbcamp_java_5th_schedulemanagement.dto.UpdateScheduleRequestDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.entity.Schedule;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -68,17 +69,18 @@ public class ScheduleRepository {
 
     public Schedule findById(Long id) {
         String sql = "SELECT * FROM scheduleTable WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (resultSet, i) -> {
-            Schedule schedule = new Schedule();
-            schedule.setId(resultSet.getLong("id"));
-            schedule.setTitle(resultSet.getString("title"));
-            schedule.setContents(resultSet.getString("contents"));
-            schedule.setManager(resultSet.getString("manager"));
-            schedule.setPassword(resultSet.getString("password"));
-            schedule.setDate(resultSet.getString("date"));
-            return schedule;
-        });
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, (resultSet, i) ->
+                new Schedule(
+                        resultSet.getLong("id"),
+                        resultSet.getString("title"),
+                        resultSet.getString("contents"),
+                        resultSet.getString("manager"),
+                        resultSet.getString("password"),
+                        resultSet.getString("date")
+                )
+        );
     }
+
     public void deleteSchedule(Long id) {
         String sql = "DELETE FROM scheduleTable WHERE id = ?";
         jdbcTemplate.update(sql, id);
