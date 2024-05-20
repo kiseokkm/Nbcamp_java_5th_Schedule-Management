@@ -6,6 +6,7 @@ import com.sparta.nbcamp_java_5th_schedulemanagement.repository.ScheduleReposito
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ScheduleService {
@@ -33,7 +34,7 @@ public class ScheduleService {
     public Long updateSchedule(Long id, UpdateScheduleRequestDto updateScheduleRequestDto) {
         Schedule schedule = scheduleRepository.findById(id);
         if (schedule != null) {
-            if (updateScheduleRequestDto.getPassword().equals(schedule.getPassword())) {
+            if (Objects.equals(updateScheduleRequestDto.getPassword(), schedule.getPassword())) {
                 scheduleRepository.updateSchedule(id, updateScheduleRequestDto);
                 return id;
             } else {
@@ -47,7 +48,7 @@ public class ScheduleService {
     public Long deleteSchedule(Long id, DeleteScheduleRequestDto deleteScheduleRequestDto) {
         Schedule schedule = scheduleRepository.findById(id);
         if (schedule != null) {
-            if (deleteScheduleRequestDto.getPassword().equals(schedule.getPassword())) {
+            if (Objects.equals(deleteScheduleRequestDto.getPassword(), schedule.getPassword())) {
                 scheduleRepository.deleteSchedule(id);
                 return id;
             } else {
