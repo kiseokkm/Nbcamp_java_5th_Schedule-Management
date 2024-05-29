@@ -18,12 +18,4 @@ public class ScheduleResponseDto {
         this.manager = schedule.getManager();
         this.date = schedule.getDate();
     }
-
-    public ScheduleResponseDto(Long id, String title, String contents, String manager, String date) {
-        this.id = id;
-        this.title = title;
-        this.contents = contents;
-        this.manager = manager;
-        this.date = date;
-    }
 }
