@@ -2,10 +2,11 @@ package com.sparta.nbcamp_java_5th_schedulemanagement.entity;
 
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleRequestDto;
 import jakarta.persistence.*;
-
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +23,9 @@ public class Schedule {
     private String manager;
     private String password;
     private String date;
+
+    @OneToMany(mappedBy = "schedule", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 
     public Schedule(ScheduleRequestDto scheduleRequestDto) {
         this.title = scheduleRequestDto.getTitle();
