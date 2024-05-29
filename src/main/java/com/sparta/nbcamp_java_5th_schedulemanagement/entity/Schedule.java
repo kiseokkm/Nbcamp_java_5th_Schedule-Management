@@ -1,6 +1,8 @@
 package com.sparta.nbcamp_java_5th_schedulemanagement.entity;
 
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.ScheduleRequestDto;
+import jakarta.persistence.*;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,8 +10,13 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@Entity
+@Table(name = "scheduletable")
 public class Schedule {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String title;
     private String contents;
     private String manager;
@@ -22,14 +29,5 @@ public class Schedule {
         this.manager = scheduleRequestDto.getManager();
         this.password = scheduleRequestDto.getPassword();
         this.date = scheduleRequestDto.getDate();
-    }
-
-    public Schedule(Long id, String title, String contents, String manager, String password, String date) {
-        this.id = id;
-        this.title = title;
-        this.contents = contents;
-        this.manager = manager;
-        this.password = password;
-        this.date = date;
     }
 }

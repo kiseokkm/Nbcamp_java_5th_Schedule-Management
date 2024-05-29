@@ -1,42 +1,77 @@
 package com.sparta.nbcamp_java_5th_schedulemanagement.controller;
 
+import com.sparta.nbcamp_java_5th_schedulemanagement.CommonResponse;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.*;
 import com.sparta.nbcamp_java_5th_schedulemanagement.service.ScheduleService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/schedules")
+@AllArgsConstructor
 public class ScheduleController {
     private final ScheduleService scheduleService;
 
-    public ScheduleController(ScheduleService scheduleService) {
-        this.scheduleService = scheduleService;
-    }
-
     @PostMapping
-    public ScheduleResponseDto createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
-        return scheduleService.createSchedule(scheduleRequestDto);
+    public ResponseEntity<CommonResponse<ScheduleResponseDto>> createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
+        ScheduleResponseDto schedule = scheduleService.createSchedule(scheduleRequestDto);
+        return ResponseEntity.ok(
+                CommonResponse.<ScheduleResponseDto>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .msg("생성이 완료 되었습니다.")
+                        .data(schedule)
+                        .build()
+        );
     }
 
     @GetMapping
-    public List<ScheduleResponseDto> getAllSchedules() {
-        return scheduleService.getAllSchedules();
+    public ResponseEntity<CommonResponse<List<ScheduleResponseDto>>> getAllSchedules() {
+        List<ScheduleResponseDto> schedules = scheduleService.getAllSchedules();
+        return ResponseEntity.ok(
+                CommonResponse.<List<ScheduleResponseDto>>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .msg("목록 조회가 완료 되었습니다.")
+                        .data(schedules)
+                        .build()
+        );
     }
 
     @GetMapping("/{id}")
-    public ScheduleResponseDto getSchedule(@PathVariable Long id) {
-        return scheduleService.getSchedule(id);
+    public ResponseEntity<CommonResponse<ScheduleResponseDto>> getSchedule(@PathVariable Long id) {
+        ScheduleResponseDto schedule = scheduleService.getSchedule(id);
+        return ResponseEntity.ok(
+                CommonResponse.<ScheduleResponseDto>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .msg("단건 조회가 완료 되었습니다.")
+                        .data(schedule)
+                        .build()
+        );
     }
 
     @PutMapping("/{id}")
-    public Long updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto) {
-        return scheduleService.updateSchedule(id, updateScheduleRequestDto);
+    public ResponseEntity<CommonResponse<ScheduleResponseDto>> updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto) {
+        ScheduleResponseDto schedule = scheduleService.updateSchedule(id, updateScheduleRequestDto);
+        return ResponseEntity.ok(
+                CommonResponse.<ScheduleResponseDto>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .msg("수정이 완료 되었습니다.")
+                        .data(schedule)
+                        .build()
+        );
     }
 
     @DeleteMapping("/{id}")
-    public Long deleteSchedule(@PathVariable Long id, @RequestBody DeleteScheduleRequestDto deleteScheduleRequestDto) {
-        return scheduleService.deleteSchedule(id, deleteScheduleRequestDto);
+    public ResponseEntity<CommonResponse<Void>> deleteSchedule(@PathVariable Long id, @RequestBody DeleteScheduleRequestDto deleteScheduleRequestDto) {
+        scheduleService.deleteSchedule(id, deleteScheduleRequestDto.getPassword());
+        return ResponseEntity.ok(
+                CommonResponse.<Void>builder()
+                        .statusCode(HttpStatus.OK.value())
+                        .msg("삭제가 완료 되었습니다.")
+                        .build()
+        );
     }
 }
