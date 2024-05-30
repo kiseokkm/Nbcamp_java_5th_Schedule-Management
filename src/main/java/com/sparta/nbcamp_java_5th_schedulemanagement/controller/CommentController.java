@@ -3,6 +3,7 @@ package com.sparta.nbcamp_java_5th_schedulemanagement.controller;
 import com.sparta.nbcamp_java_5th_schedulemanagement.CommonResponse;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.CommentRequestDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.CommentResponseDto;
+import com.sparta.nbcamp_java_5th_schedulemanagement.dto.DeleteCommentRequestDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.UpdateCommentRequestDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.service.CommentService;
 import lombok.AllArgsConstructor;
@@ -70,5 +71,24 @@ public class CommentController {
                         .data(comments)
                         .build()
         );
+    }
+    @DeleteMapping("/{id}")
+    public ResponseEntity<CommonResponse<Void>> deleteComment(@PathVariable Long id, @RequestBody DeleteCommentRequestDto deleteCommentRequestDto) {
+        try {
+            commentService.deleteComment(id, deleteCommentRequestDto);
+            return ResponseEntity.ok(
+                    CommonResponse.<Void>builder()
+                            .statusCode(HttpStatus.OK.value())
+                            .msg("댓글이 성공적으로 삭제되었습니다.")
+                            .build()
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(
+                    CommonResponse.<Void>builder()
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
+                            .msg(e.getMessage())
+                            .build()
+            );
+        }
     }
 }
