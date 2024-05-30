@@ -30,35 +30,40 @@ public class ScheduleService {
     }
 
     public ScheduleResponseDto getSchedule(Long id) {
-        Schedule schedule = scheduleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다"));
+        Schedule schedule = findScheduleById(id);
         return new ScheduleResponseDto(schedule);
     }
 
     public ScheduleResponseDto updateSchedule(Long id, UpdateScheduleRequestDto updateScheduleRequestDto) {
-        Schedule schedule = scheduleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다"));
+        Schedule schedule = findScheduleById(id);
+        validatePassword(schedule.getPassword(), updateScheduleRequestDto.getPassword());
 
-        if (!Objects.equals(updateScheduleRequestDto.getPassword(), schedule.getPassword())) {
-            throw new IllegalArgumentException("비밀번호 불일치");
-        }
-
-        schedule.setTitle(updateScheduleRequestDto.getTitle());
-        schedule.setContents(updateScheduleRequestDto.getContents());
-        schedule.setManager(updateScheduleRequestDto.getManager());
-        schedule.setDate(updateScheduleRequestDto.getDate());
+        updateScheduleFromDto(schedule, updateScheduleRequestDto);
         Schedule updatedSchedule = scheduleRepository.save(schedule);
         return new ScheduleResponseDto(updatedSchedule);
     }
 
     public void deleteSchedule(Long id, String password) {
-        Schedule schedule = scheduleRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다"));
+        Schedule schedule = findScheduleById(id);
+        validatePassword(schedule.getPassword(), password);
+        scheduleRepository.delete(schedule);
+    }
 
-        if (!Objects.equals(password, schedule.getPassword())) {
+    private Schedule findScheduleById(Long id) {
+        return scheduleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다"));
+    }
+
+    private void validatePassword(String actualPassword, String inputPassword) {
+        if (!Objects.equals(actualPassword, inputPassword)) {
             throw new IllegalArgumentException("비밀번호 불일치");
         }
+    }
 
-        scheduleRepository.delete(schedule);
+    private void updateScheduleFromDto(Schedule schedule, UpdateScheduleRequestDto updateScheduleRequestDto) {
+        schedule.setTitle(updateScheduleRequestDto.getTitle());
+        schedule.setContents(updateScheduleRequestDto.getContents());
+        schedule.setManager(updateScheduleRequestDto.getManager());
+        schedule.setDate(updateScheduleRequestDto.getDate());
     }
 }

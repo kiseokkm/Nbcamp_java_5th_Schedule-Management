@@ -24,8 +24,7 @@ public class CommentService {
     public CommentResponseDto createComment(CommentRequestDto commentRequestDto) {
         commentRequestDto.validate();
 
-        Schedule schedule = scheduleRepository.findById(commentRequestDto.getScheduleId())
-                .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다"));
+        Schedule schedule = findScheduleById(commentRequestDto.getScheduleId());
         Comment comment = new Comment(commentRequestDto.getContent(), commentRequestDto.getUserId(), schedule);
         Comment savedComment = commentRepository.save(comment);
         return new CommentResponseDto(savedComment);
@@ -41,12 +40,8 @@ public class CommentService {
     public CommentResponseDto updateComment(Long id, UpdateCommentRequestDto updateCommentRequestDto) {
         updateCommentRequestDto.validate();
 
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 없습니다"));
-
-        if (!comment.getUserId().equals(updateCommentRequestDto.getUserId())) {
-            throw new IllegalArgumentException("댓글 작성자와 현재 사용자 불일치");
-        }
+        Comment comment = findCommentById(id);
+        validateUser(comment.getUserId(), updateCommentRequestDto.getUserId());
 
         comment.setContent(updateCommentRequestDto.getContent());
         Comment updatedComment = commentRepository.save(comment);
@@ -54,13 +49,25 @@ public class CommentService {
     }
 
     public void deleteComment(Long id, DeleteCommentRequestDto deleteCommentRequestDto) {
-        Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("댓글이 존재하지 않습니다"));
-
-        if (!comment.getUserId().equals(deleteCommentRequestDto.getUserId())) {
-            throw new IllegalArgumentException("댓글 작성자와 현재 사용자 불일치");
-        }
+        Comment comment = findCommentById(id);
+        validateUser(comment.getUserId(), deleteCommentRequestDto.getUserId());
 
         commentRepository.delete(comment);
+    }
+
+    private Schedule findScheduleById(Long id) {
+        return scheduleRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다"));
+    }
+
+    private Comment findCommentById(Long id) {
+        return commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("댓글이 없습니다"));
+    }
+
+    private void validateUser(String commentUserId, String requestUserId) {
+        if (!commentUserId.equals(requestUserId)) {
+            throw new IllegalArgumentException("댓글 작성자와 현재 사용자 불일치");
+        }
     }
 }
