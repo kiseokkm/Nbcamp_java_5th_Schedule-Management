@@ -20,6 +20,8 @@ public class CommentService {
     private final ScheduleRepository scheduleRepository;
 
     public CommentResponseDto createComment(CommentRequestDto commentRequestDto) {
+        commentRequestDto.validate();
+
         Schedule schedule = scheduleRepository.findById(commentRequestDto.getScheduleId())
                 .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다"));
         Comment comment = new Comment(commentRequestDto.getContent(), commentRequestDto.getUserId(), schedule);

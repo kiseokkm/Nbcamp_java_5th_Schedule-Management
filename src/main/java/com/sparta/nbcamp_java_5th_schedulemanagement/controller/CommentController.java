@@ -19,14 +19,23 @@ public class CommentController {
 
     @PostMapping
     public ResponseEntity<CommonResponse<CommentResponseDto>> createComment(@RequestBody CommentRequestDto commentRequestDto) {
-        CommentResponseDto comment = commentService.createComment(commentRequestDto);
-        return ResponseEntity.ok(
-                CommonResponse.<CommentResponseDto>builder()
-                        .statusCode(HttpStatus.OK.value())
-                        .msg("댓글이 성공적으로 추가되었습니다.")
-                        .data(comment)
-                        .build()
-        );
+        try {
+            CommentResponseDto comment = commentService.createComment(commentRequestDto);
+            return ResponseEntity.ok(
+                    CommonResponse.<CommentResponseDto>builder()
+                            .statusCode(HttpStatus.OK.value())
+                            .msg("댓글이 성공적으로 추가되었습니다.")
+                            .data(comment)
+                            .build()
+            );
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(
+                    CommonResponse.<CommentResponseDto>builder()
+                            .statusCode(HttpStatus.BAD_REQUEST.value())
+                            .msg(e.getMessage())
+                            .build()
+            );
+        }
     }
 
     @GetMapping("/schedule/{scheduleId}")
