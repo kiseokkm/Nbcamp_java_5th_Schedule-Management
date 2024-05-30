@@ -2,6 +2,7 @@ package com.sparta.nbcamp_java_5th_schedulemanagement.service;
 
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.CommentRequestDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.CommentResponseDto;
+import com.sparta.nbcamp_java_5th_schedulemanagement.dto.UpdateCommentRequestDto;
 import com.sparta.nbcamp_java_5th_schedulemanagement.entity.Comment;
 import com.sparta.nbcamp_java_5th_schedulemanagement.entity.Schedule;
 import com.sparta.nbcamp_java_5th_schedulemanagement.repository.CommentRepository;
@@ -34,5 +35,20 @@ public class CommentService {
         return comments.stream()
                 .map(CommentResponseDto::new)
                 .collect(Collectors.toList());
+    }
+
+    public CommentResponseDto updateComment(Long id, UpdateCommentRequestDto updateCommentRequestDto) {
+        updateCommentRequestDto.validate();
+
+        Comment comment = commentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("댓글이 없습니다"));
+
+        if (!comment.getUserId().equals(updateCommentRequestDto.getUserId())) {
+            throw new IllegalArgumentException("댓글 작성자와 현재 사용자 불일치");
+        }
+
+        comment.setContent(updateCommentRequestDto.getContent());
+        Comment updatedComment = commentRepository.save(comment);
+        return new CommentResponseDto(updatedComment);
     }
 }
