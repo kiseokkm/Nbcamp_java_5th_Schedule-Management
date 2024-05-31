@@ -2,10 +2,12 @@ package com.sparta.nbcamp_java_5th_schedulemanagement.controller;
 
 import com.sparta.nbcamp_java_5th_schedulemanagement.CommonResponse;
 import com.sparta.nbcamp_java_5th_schedulemanagement.dto.*;
+import com.sparta.nbcamp_java_5th_schedulemanagement.security.UserDetailsImpl;
 import com.sparta.nbcamp_java_5th_schedulemanagement.service.ScheduleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,7 +19,8 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<CommonResponse<ScheduleResponseDto>> createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto) {
+    public ResponseEntity<CommonResponse<ScheduleResponseDto>> createSchedule(@RequestBody ScheduleRequestDto scheduleRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        scheduleRequestDto.setManager(userDetails.getUsername());
         ScheduleResponseDto schedule = scheduleService.createSchedule(scheduleRequestDto);
         return ResponseEntity.ok(
                 CommonResponse.<ScheduleResponseDto>builder()
@@ -53,7 +56,8 @@ public class ScheduleController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<CommonResponse<ScheduleResponseDto>> updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto) {
+    public ResponseEntity<CommonResponse<ScheduleResponseDto>> updateSchedule(@PathVariable Long id, @RequestBody UpdateScheduleRequestDto updateScheduleRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        updateScheduleRequestDto.setManager(userDetails.getUsername());
         ScheduleResponseDto schedule = scheduleService.updateSchedule(id, updateScheduleRequestDto);
         return ResponseEntity.ok(
                 CommonResponse.<ScheduleResponseDto>builder()
@@ -65,8 +69,8 @@ public class ScheduleController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<CommonResponse<Void>> deleteSchedule(@PathVariable Long id, @RequestBody DeleteScheduleRequestDto deleteScheduleRequestDto) {
-        scheduleService.deleteSchedule(id, deleteScheduleRequestDto.getPassword());
+    public ResponseEntity<CommonResponse<Void>> deleteSchedule(@PathVariable Long id, @RequestBody DeleteScheduleRequestDto deleteScheduleRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        scheduleService.deleteSchedule(id, deleteScheduleRequestDto.getPassword(), userDetails.getUsername());
         return ResponseEntity.ok(
                 CommonResponse.<Void>builder()
                         .statusCode(HttpStatus.OK.value())

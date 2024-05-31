@@ -37,8 +37,13 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        byte[] bytes = Base64.getDecoder().decode(secretKey);
-        key = Keys.hmacShaKeyFor(bytes);
+        try {
+            byte[] decodedKey = Base64.getDecoder().decode(secretKey);
+            key = Keys.hmacShaKeyFor(decodedKey);
+            logger.info("JWT secret key initialized successfully.");
+        } catch (IllegalArgumentException e) {
+            logger.error("Invalid JWT secret key: {}", e.getMessage());
+        }
     }
 
     public String createToken(String username, UserRoleEnum role) {
@@ -90,7 +95,6 @@ public class JwtUtil {
         }
         return false;
     }
-
 
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();

@@ -1,8 +1,10 @@
 package com.sparta.nbcamp_java_5th_schedulemanagement.dto;
 
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class CommentRequestDto {
     private String content;
     private String userId;

@@ -67,7 +67,7 @@ public class CommentService {
 
     private void validateUser(String commentUserId, String requestUserId) {
         if (!commentUserId.equals(requestUserId)) {
-            throw new IllegalArgumentException("댓글 작성자와 현재 사용자 불일치");
+            throw new IllegalArgumentException("작성자만 삭제/수정할 수 있습니다.");
         }
     }
 }

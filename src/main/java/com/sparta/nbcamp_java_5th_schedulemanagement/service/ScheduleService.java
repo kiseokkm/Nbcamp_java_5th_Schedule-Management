@@ -36,6 +36,7 @@ public class ScheduleService {
 
     public ScheduleResponseDto updateSchedule(Long id, UpdateScheduleRequestDto updateScheduleRequestDto) {
         Schedule schedule = findScheduleById(id);
+        validateUser(schedule.getManager(), updateScheduleRequestDto.getManager());
         validatePassword(schedule.getPassword(), updateScheduleRequestDto.getPassword());
 
         updateScheduleFromDto(schedule, updateScheduleRequestDto);
@@ -43,8 +44,9 @@ public class ScheduleService {
         return new ScheduleResponseDto(updatedSchedule);
     }
 
-    public void deleteSchedule(Long id, String password) {
+    public void deleteSchedule(Long id, String password, String manager) {
         Schedule schedule = findScheduleById(id);
+        validateUser(schedule.getManager(), manager);
         validatePassword(schedule.getPassword(), password);
         scheduleRepository.delete(schedule);
     }
@@ -52,6 +54,12 @@ public class ScheduleService {
     private Schedule findScheduleById(Long id) {
         return scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("일정이 존재하지 않습니다"));
+    }
+
+    private void validateUser(String scheduleManager, String requestManager) {
+        if (!scheduleManager.equals(requestManager)) {
+            throw new IllegalArgumentException("작성자만 삭제/수정할 수 있습니다.");
+        }
     }
 
     private void validatePassword(String actualPassword, String inputPassword) {
@@ -63,7 +71,6 @@ public class ScheduleService {
     private void updateScheduleFromDto(Schedule schedule, UpdateScheduleRequestDto updateScheduleRequestDto) {
         schedule.setTitle(updateScheduleRequestDto.getTitle());
         schedule.setContents(updateScheduleRequestDto.getContents());
-        schedule.setManager(updateScheduleRequestDto.getManager());
         schedule.setDate(updateScheduleRequestDto.getDate());
     }
 }
