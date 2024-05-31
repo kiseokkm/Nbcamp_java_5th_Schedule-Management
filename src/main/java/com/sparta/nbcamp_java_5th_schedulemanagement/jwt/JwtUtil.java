@@ -7,6 +7,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,6 +22,7 @@ import java.util.Base64;
 import java.util.Date;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -37,13 +39,8 @@ public class JwtUtil {
 
     @PostConstruct
     public void init() {
-        try {
-            byte[] decodedKey = Base64.getDecoder().decode(secretKey);
-            key = Keys.hmacShaKeyFor(decodedKey);
-            logger.info("JWT secret key initialized successfully.");
-        } catch (IllegalArgumentException e) {
-            logger.error("Invalid JWT secret key: {}", e.getMessage());
-        }
+        byte[] bytes = Base64.getDecoder().decode(secretKey);
+        key = Keys.hmacShaKeyFor(bytes);
     }
 
     public String createToken(String username, UserRoleEnum role) {
