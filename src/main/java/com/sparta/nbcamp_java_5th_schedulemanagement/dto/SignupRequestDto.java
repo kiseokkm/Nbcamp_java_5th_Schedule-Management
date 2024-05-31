@@ -9,9 +9,10 @@ import lombok.Setter;
 public class SignupRequestDto {
     private String username;
     private String password;
+    private String nickname;
     private UserRoleEnum role;
 
     public UserRoleEnum getRole() {
-        return role;
+        return role == null ? UserRoleEnum.USER : role;
     }
 }
