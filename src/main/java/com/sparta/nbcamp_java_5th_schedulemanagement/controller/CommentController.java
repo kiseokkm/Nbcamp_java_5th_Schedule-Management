@@ -25,36 +25,41 @@ public class CommentController {
     public ResponseEntity<CommonResponse<CommentResponseDto>> createComment(@RequestBody CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         commentRequestDto.setUserId(userDetails.getUsername());
         CommentResponseDto comment = commentService.createComment(commentRequestDto);
-        return buildResponse(HttpStatus.OK, "댓글이 성공적으로 추가되었습니다.", comment);
+        return new ResponseEntity<>(CommonResponse.<CommentResponseDto>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .msg("댓글이 성공적으로 추가되었습니다.")
+                .data(comment)
+                .build(), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<CommonResponse<CommentResponseDto>> updateComment(@PathVariable Long id, @RequestBody UpdateCommentRequestDto updateCommentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         updateCommentRequestDto.setUserId(userDetails.getUsername());
         CommentResponseDto updatedComment = commentService.updateComment(id, updateCommentRequestDto);
-        return buildResponse(HttpStatus.OK, "댓글이 성공적으로 수정되었습니다.", updatedComment);
+        return new ResponseEntity<>(CommonResponse.<CommentResponseDto>builder()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .msg("댓글이 성공적으로 수정되었습니다.")
+                .data(updatedComment)
+                .build(), HttpStatus.NO_CONTENT);
     }
 
     @GetMapping("/schedule/{scheduleId}")
     public ResponseEntity<CommonResponse<List<CommentResponseDto>>> getCommentsByScheduleId(@PathVariable Long scheduleId) {
         List<CommentResponseDto> comments = commentService.getCommentsByScheduleId(scheduleId);
-        return buildResponse(HttpStatus.OK, "댓글 목록 조회가 완료되었습니다.", comments);
+        return new ResponseEntity<>(CommonResponse.<List<CommentResponseDto>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .msg("댓글 목록 조회가 완료되었습니다.")
+                .data(comments)
+                .build(), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CommonResponse<Void>> deleteComment(@PathVariable Long id, @RequestBody DeleteCommentRequestDto deleteCommentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         deleteCommentRequestDto.setUserId(userDetails.getUsername());
         commentService.deleteComment(id, deleteCommentRequestDto);
-        return buildResponse(HttpStatus.OK, "댓글이 성공적으로 삭제되었습니다.", null);
-    }
-
-    private <T> ResponseEntity<CommonResponse<T>> buildResponse(HttpStatus status, String msg, T data) {
-        return ResponseEntity.status(status).body(
-                CommonResponse.<T>builder()
-                        .statusCode(status.value())
-                        .msg(msg)
-                        .data(data)
-                        .build()
-        );
+        return new ResponseEntity<>(CommonResponse.<Void>builder()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .msg("댓글이 성공적으로 삭제되었습니다.")
+                .build(), HttpStatus.NO_CONTENT);
     }
 }
